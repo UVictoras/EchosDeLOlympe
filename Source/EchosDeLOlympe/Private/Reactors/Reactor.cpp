@@ -2,26 +2,45 @@
 
 
 #include "Reactors/Reactor.h"
+#include "HeatSource/HeatSource.h"
 
-// Sets default values
 AReactor::AReactor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void AReactor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_reactorOverlapComponent = Cast<UPrimitiveComponent>(_componentReference.GetComponent(this));
+	
+	if (_reactorOverlapComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OOOOUI"));
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Reactor Overlap Component not Defined"));
+	}
+
+	
 	
 }
 
-// Called every frame
-void AReactor::Tick(float DeltaTime)
+void AReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::Tick(DeltaTime);
-
+	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OUI"));
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("non"));
 }
+
+void AReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
 

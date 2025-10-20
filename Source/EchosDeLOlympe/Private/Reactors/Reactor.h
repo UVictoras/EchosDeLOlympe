@@ -12,15 +12,21 @@ class AReactor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AReactor();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void BeginPlay() override;	
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	UPROPERTY(EditAnywhere)
+	FComponentReference _componentReference;
+
+	
+	UPrimitiveComponent* _reactorOverlapComponent;
+
+	UFUNCTION()
+	void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
