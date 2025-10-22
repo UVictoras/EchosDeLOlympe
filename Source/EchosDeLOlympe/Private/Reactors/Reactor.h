@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Reactor.generated.h"
 
+class AHeatSource;
+
 UCLASS()
 class AReactor : public AActor
 {
@@ -21,6 +23,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	FComponentReference _componentReference;
 
+	FTimerHandle _timerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Timer")
+	float _timerInterval;
 	
 	UPrimitiveComponent* _reactorOverlapComponent;
 
@@ -28,5 +34,7 @@ private:
 	void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+	void UpdateTemperature(AHeatSource* source, UPrimitiveComponent* myComp);
 
 };

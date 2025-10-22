@@ -31,23 +31,28 @@ void AHeatSource::BeginPlay()
 
 void AHeatSource::OnHeatZoneOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FTimerDelegate TimerDelegate;
-
-	TimerDelegate.BindUFunction(this, FName("GetDistance"), OtherComp);
-
-	GetWorld()->GetTimerManager().SetTimer(_timerHandle, TimerDelegate, _timerInterval, true);
+	
 }
 
 void AHeatSource::OnHeatZoneEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+	
 }
 
-void AHeatSource::GetDistance(UPrimitiveComponent* component)
+float AHeatSource::GetDistance(UPrimitiveComponent* component)
 {
 	FVector ClosestPoint;
 
 	float Distance = component->GetClosestPointOnCollision(_heatZone->GetComponentLocation(),ClosestPoint);
 
-	UE_LOG(LogTemp, Warning, TEXT("Distance à l'objet: %f"), Distance);
+	return Distance;
+}
+
+float AHeatSource::GetObjectTemperature(UPrimitiveComponent* component)
+{
+	float distance = GetDistance(component);
+
+	float temperature = _minTemperature + (_maxTemperature - _minTemperature) * (1 - (distance - _minDistance) / (_emissionRadius - _minDistance));
+
+	return temperature;
 }

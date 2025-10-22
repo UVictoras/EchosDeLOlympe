@@ -21,13 +21,11 @@ private :
 	float _maxTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _emissionRadius;
+	UPROPERTY(EditAnywhere, Category = "Temperature")
+	float _minDistance;
 
-	UPROPERTY(EditAnywhere, Category = "Timer")
-	float _timerInterval;
 
 	USphereComponent* _heatZone;
-
-	FTimerHandle _timerHandle;
 
 
 	UFUNCTION()
@@ -35,10 +33,12 @@ private :
 	UFUNCTION()
 	void OnHeatZoneEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
-	void GetDistance(UPrimitiveComponent* component);
+	float GetDistance(UPrimitiveComponent* component);
 	
 public:	
 	AHeatSource();
+
+	float GetObjectTemperature(UPrimitiveComponent* component);
 
 protected:
 	virtual void BeginPlay() override;

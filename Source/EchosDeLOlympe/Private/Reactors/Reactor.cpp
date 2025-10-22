@@ -17,7 +17,8 @@ void AReactor::BeginPlay()
 	
 	if (_reactorOverlapComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OOOOUI"));
+		_reactorOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AReactor::OnReactorOverlap);
+		_reactorOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AReactor::OnReactorEndOverlap);
 	}
 
 	else
@@ -33,14 +34,24 @@ void AReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OUI"));
+		FTimerDelegate TimerDelegate;
+
+		TimerDelegate.BindUFunction(this, FName("UpdateTemperature"), source, OverlappedComponent);
+
+		GetWorld()->GetTimerManager().SetTimer(_timerHandle, TimerDelegate, _timerInterval, true);
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("non"));
 }
 
 void AReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+}
+
+void AReactor::UpdateTemperature(AHeatSource* source, UPrimitiveComponent* myComp)
+{
+	float temp = source->GetObjectTemperature(myComp);
+
+	UE_LOG(LogTemp, Warning, TEXT("Temperature: %f"), temp);
 }
 
 
