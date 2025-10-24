@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Containers/Map.h"
 #include "Reactor.generated.h"
 
 class AHeatSource;
@@ -30,11 +31,15 @@ private:
 	
 	UPrimitiveComponent* _reactorOverlapComponent;
 
+	UPROPERTY()
+	TMap<AHeatSource*, float> _objectsTemperature;
+	float _currentTemperature;
+
 	UFUNCTION()
 	void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
-	void UpdateTemperature(AHeatSource* source, UPrimitiveComponent* myComp);
+	void UpdateTemperature(AHeatSource* source);
 
 };

@@ -34,9 +34,11 @@ void AReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
 	{
+		_objectsTemperature.Emplace(source, source->GetObjectTemperature(_reactorOverlapComponent));
+
 		FTimerDelegate TimerDelegate;
 
-		TimerDelegate.BindUFunction(this, FName("UpdateTemperature"), source, OverlappedComponent);
+		TimerDelegate.BindUFunction(this, FName("UpdateTemperature"), source);
 
 		GetWorld()->GetTimerManager().SetTimer(_timerHandle, TimerDelegate, _timerInterval, true);
 	}
@@ -44,14 +46,36 @@ void AReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 void AReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
+	{
+		_objectsTemperature.Remove(source);
+
+		if (_objectsTemperature.Num() == 0)
+			GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+	}
+	
 }
 
-void AReactor::UpdateTemperature(AHeatSource* source, UPrimitiveComponent* myComp)
+void AReactor::UpdateTemperature(AHeatSource* source)
 {
-	float temp = source->GetObjectTemperature(myComp);
+	float maxTemp = 0;
 
-	UE_LOG(LogTemp, Warning, TEXT("Temperature: %f"), temp);
+	for (TPair<AHeatSource*, float>& Elem : _objectsTemperature)
+	{
+		AHeatSource* source = Elem.Key;
+		float& temperature = Elem.Value;
+
+		if (IsValid(source))
+		{
+			temperature = source->GetObjectTemperature(_reactorOverlapComponent);
+
+			if (temperature > maxTemp)
+				maxTemp = temperature;
+		}
+
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Temperature: %f"), maxTemp);
 }
 
 
