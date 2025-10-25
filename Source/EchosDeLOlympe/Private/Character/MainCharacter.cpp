@@ -2,6 +2,9 @@
 
 
 #include "Character/MainCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -9,6 +12,20 @@ AMainCharacter::AMainCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Spring Arm"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->TargetArmLength = 300.0f;
+	SpringArm->bUsePawnControlRotation = true;
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->bUsePawnControlRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -30,5 +47,53 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("SideStrafe", this, &AMainCharacter::StrafeSide);
+
+	PlayerInputComponent->BindAxis("TurnCamera", this, &AMainCharacter::TurnCamera);
+	PlayerInputComponent->BindAxis("LookUp", this, &AMainCharacter::LookUp);
 }
 
+void AMainCharacter::MoveForward(float InputValue)
+{
+	if (Controller && InputValue != 0.0f)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+
+		const FVector Direction =  FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, InputValue);
+
+		FRotator CurrentRotation = GetActorRotation();
+		FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, YawRotation, GetWorld()->GetDeltaSeconds(), 10.0f);
+		SetActorRotation(TargetRotation);
+	}
+}
+
+void AMainCharacter::StrafeSide(float InputValue)
+{
+	if (Controller && InputValue != 0.0f)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(Direction, InputValue);
+
+		FRotator CurrentRotation = GetActorRotation();
+		FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, YawRotation, GetWorld()->GetDeltaSeconds(), 10.0f);
+		SetActorRotation(TargetRotation);
+	}
+}
+
+void AMainCharacter::TurnCamera(float InputValue)
+{
+	AddControllerYawInput(InputValue);
+}
+
+void AMainCharacter::LookUp(float InputValue)
+{
+	AddControllerPitchInput(InputValue);
+}
