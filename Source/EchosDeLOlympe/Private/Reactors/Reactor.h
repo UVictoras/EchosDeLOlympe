@@ -18,7 +18,35 @@ public:
 	AReactor();
 
 protected:
+
+	float _currentTemperature;
+
+	UPROPERTY(EditAnywhere, Category = "Temperature")
+	float _activationTemperature;
+	UPROPERTY(EditAnywhere, Category = "Temperature")
+	float _coolingDuration;
+
+	bool _isActive;
+
 	virtual void BeginPlay() override;	
+
+	UFUNCTION()
+	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+	virtual void UpdateTemperature(AHeatSource* source);
+	
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void Cool();
+	virtual void Cool_Implementation();
+	UFUNCTION(BlueprintNativeEvent)
+	void Activate();
+	virtual void Activate_Implementation();
+	UFUNCTION(BlueprintNativeEvent)
+	void Deactivate();
+	virtual void Deactivate_Implementation();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -33,13 +61,5 @@ private:
 
 	UPROPERTY()
 	TMap<AHeatSource*, float> _objectsTemperature;
-	float _currentTemperature;
-
-	UFUNCTION()
-	void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	void UpdateTemperature(AHeatSource* source);
 
 };

@@ -51,7 +51,10 @@ void AReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		_objectsTemperature.Remove(source);
 
 		if (_objectsTemperature.Num() == 0)
+		{
 			GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
+			Cool();
+		}
 	}
 	
 }
@@ -75,7 +78,35 @@ void AReactor::UpdateTemperature(AHeatSource* source)
 
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Temperature: %f"), maxTemp);
+	_currentTemperature = maxTemp;
+
+	if (_currentTemperature >= _activationTemperature)
+	{
+		Activate();
+	}
+
+	else if (_isActive && _currentTemperature <= _activationTemperature)
+	{
+		Deactivate();
+	}
 }
 
+void AReactor::Cool_Implementation()
+{
+	_currentTemperature = 0;
 
+	Deactivate();
+
+}
+
+void AReactor::Activate_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Activate"));
+	_isActive = true;
+}
+
+void AReactor::Deactivate_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Deactivate"));
+	_isActive = false;
+}
