@@ -129,8 +129,8 @@ void USoundSystem::OnPooledAudioFinished()
 		{
 			AC->Stop();
 			AC->SetSound(nullptr);
-			AC->AttenuationSettings = nullptr
-		}
+			AC->AttenuationSettings = nullptr;
+		};
 	}
 }
 
