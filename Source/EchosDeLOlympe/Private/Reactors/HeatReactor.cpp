@@ -3,7 +3,7 @@
 
 #include "Reactors/HeatReactor.h"
 
-#include "HeatSource/HeatSource.h"
+#include "HeatSource/HeatSourceComponent.h"
 
 UHeatReactor::UHeatReactor()
 {
@@ -29,7 +29,7 @@ void UHeatReactor::Init()
 
 void UHeatReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
+	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
 	{
 		_objectsTemperature.Emplace(source, source->GetObjectTemperature(_reactorOverlapComponent));
 
@@ -42,7 +42,7 @@ void UHeatReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (AHeatSource* source = Cast<AHeatSource>(OtherActor))
+	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
 	{
 		_objectsTemperature.Remove(source);
 
@@ -55,13 +55,13 @@ void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AAct
 
 }
 
-void UHeatReactor::UpdateTemperature(AHeatSource* source)
+void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 {
 	float maxTemp = 0;
 
-	for (TPair<AHeatSource*, float>& Elem : _objectsTemperature)
+	for (TPair<UHeatSourceComponent*, float>& Elem : _objectsTemperature)
 	{
-		AHeatSource* source = Elem.Key;
+		UHeatSourceComponent* source = Elem.Key;
 		float& temperature = Elem.Value;
 
 		if (IsValid(source))

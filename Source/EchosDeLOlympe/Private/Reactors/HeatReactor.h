@@ -8,6 +8,7 @@
 #include "Components/ActorComponent.h"
 #include "HeatReactor.generated.h"
 
+class UHeatSourceComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UHeatReactor : public UActorComponent
@@ -36,7 +37,7 @@ protected:
 	UFUNCTION()
 	virtual void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
-	virtual void UpdateTemperature(AHeatSource* source);
+	virtual void UpdateTemperature(UHeatSourceComponent* source);
 
 
 	UFUNCTION(BlueprintNativeEvent)
@@ -63,7 +64,7 @@ private:
 	UPrimitiveComponent* _reactorOverlapComponent;
 
 	UPROPERTY()
-	TMap<AHeatSource*, float> _objectsTemperature;
+	TMap<UHeatSourceComponent*, float> _objectsTemperature;
 
 		
 };
