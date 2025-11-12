@@ -4,23 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interactible.h"
 #include "IButton.generated.h"
 
 UCLASS()
-class AIButton : public AActor
+class AIButton : public AActor, public IInteractible
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AIButton();
+    GENERATED_BODY()
 
+public:
+    AIButton();
+
+    virtual void Interact_Implementation(AActor* Interactor) override;
+
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteracted, AActor*, Interactor);
+
+    UPROPERTY(BlueprintAssignable, Category = "Interaction")
+    FOnInteracted OnInteracted;
+    
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    UPROPERTY(VisibleAnywhere)
+    UStaticMeshComponent* Mesh;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+    UFUNCTION()
+    void Animate(AActor* Interactor);
 };
