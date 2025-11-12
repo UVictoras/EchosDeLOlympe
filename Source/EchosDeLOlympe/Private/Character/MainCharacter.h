@@ -39,4 +39,7 @@ protected:
 	void StrafeSide(float InputValue);
 	void TurnCamera(float InputValue);
 	void LookUp(float InputValue);
+
+	void StartCrouch();
+	void StopCrouch();
 };

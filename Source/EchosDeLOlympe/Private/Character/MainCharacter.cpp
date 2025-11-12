@@ -17,6 +17,7 @@ AMainCharacter::AMainCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Spring Arm"));
 	SpringArm->SetupAttachment(RootComponent);
@@ -48,6 +49,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::StartCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::StopCrouch);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("SideStrafe", this, &AMainCharacter::StrafeSide);
@@ -96,4 +100,14 @@ void AMainCharacter::TurnCamera(float InputValue)
 void AMainCharacter::LookUp(float InputValue)
 {
 	AddControllerPitchInput(InputValue);
+}
+
+void AMainCharacter::StartCrouch()
+{
+	Crouch();
+}
+
+void AMainCharacter::StopCrouch()
+{
+	UnCrouch();
 }
