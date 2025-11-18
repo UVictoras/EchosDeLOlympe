@@ -8,15 +8,29 @@
 #include "Components/ActorComponent.h"
 #include "HeatReactor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReact);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStopReact);
+
 class UHeatSourceComponent;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UHeatReactor : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	UHeatReactor();
+
+	bool IsActive;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnReact OnReact;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnStopReact OnStopReact;
+
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Init();
 
 protected:
 
@@ -26,11 +40,6 @@ protected:
 	float _activationTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _coolingDuration;
-
-	bool _isActive;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void Init();
 
 	UFUNCTION()
 	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -81,7 +81,7 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 		ActivateReactor();
 	}
 
-	else if (_isActive && _currentTemperature <= _activationTemperature)
+	else if (IsActive && _currentTemperature <= _activationTemperature)
 	{
 		DeactivateReactor();
 	}
@@ -98,13 +98,16 @@ void UHeatReactor::Cool_Implementation()
 void UHeatReactor::ActivateReactor_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Activate"));
-	_isActive = true;
+
+	OnReact.Broadcast();
+	IsActive = true;
 }
 
 void UHeatReactor::DeactivateReactor_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Deactivate"));
-	_isActive = false;
+	OnStopReact.Broadcast();
+	IsActive = false;
 }
 
 

@@ -3,27 +3,39 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "Enemy.generated.h"
 
+class UHeatReactor;
+
 UCLASS()
-class AEnemy : public APawn
+class AEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	AEnemy();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UBehaviorTree* GetBehaviorTree();
+
+	bool IsActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
+	UHeatReactor* _reactor
+		;
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree* m_tree;
+
+
+	void Activate();
+	void Deactivate();
 };

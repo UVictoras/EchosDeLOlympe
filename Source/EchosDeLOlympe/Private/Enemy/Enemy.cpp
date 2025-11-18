@@ -1,34 +1,45 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Enemy/Enemy.h"
+#include "Reactors/HeatReactor.h"
 
-// Sets default values
 AEnemy::AEnemy()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_reactor->Init();
+
+	_reactor->OnReact.AddDynamic(this, &AEnemy::Activate);
+	_reactor->OnStopReact.AddDynamic(this, &AEnemy::Deactivate);
 	
 }
 
-// Called every frame
+void AEnemy::Activate()
+{
+	IsActive = true;
+}
+
+void AEnemy::Deactivate()
+{
+	IsActive = false;
+}
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
+UBehaviorTree* AEnemy::GetBehaviorTree()
+{
+	return m_tree;
+}
