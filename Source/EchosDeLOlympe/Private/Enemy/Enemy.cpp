@@ -1,5 +1,7 @@
 #include "Enemy/Enemy.h"
+#include "Enemy/EnemyController.h"
 #include "Reactors/HeatReactor.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -16,7 +18,14 @@ void AEnemy::BeginPlay()
 
 	_reactor->OnReact.AddDynamic(this, &AEnemy::Activate);
 	_reactor->OnStopReact.AddDynamic(this, &AEnemy::Deactivate);
+
+	AEnemyController* controller = Cast<AEnemyController>(GetController());
 	
+	if (!controller)
+		return;
+	
+	UBlackboardComponent* blackboard = controller->GetBlackboardComponent();
+	blackboard->SetValueAsBool("IsStatic", )
 }
 
 void AEnemy::Activate()

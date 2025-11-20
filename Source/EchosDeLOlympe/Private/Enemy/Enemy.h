@@ -25,15 +25,25 @@ public:
 
 	bool IsActive;
 
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
 	UHeatReactor* _reactor;
 
-protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree* m_tree;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TArray<FVector> _patrolPoint;
+	
+	int _currentPatrolPoint  = 0.f;
+
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UBehaviorTree* m_tree;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Catergory = "State", meta = (AllowPrivateAccess = "true"))
+	bool _IsStatic;
 
 	UFUNCTION()
 	void Activate();
