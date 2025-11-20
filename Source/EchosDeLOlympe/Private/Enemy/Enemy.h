@@ -26,8 +26,8 @@ public:
 	bool IsActive;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
-	UHeatReactor* _reactor
-		;
+	UHeatReactor* _reactor;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,7 +35,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* m_tree;
 
-
+	UFUNCTION()
 	void Activate();
+	UFUNCTION()
 	void Deactivate();
 };

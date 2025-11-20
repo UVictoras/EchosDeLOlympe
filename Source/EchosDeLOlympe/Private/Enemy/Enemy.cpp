@@ -4,6 +4,8 @@
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	_reactor = CreateDefaultSubobject<UHeatReactor>(TEXT("Enemy Reactor"));
 }
 
 void AEnemy::BeginPlay()
