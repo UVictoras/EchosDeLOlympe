@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Interactibles/Interactible.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -58,6 +60,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAxis("TurnCamera", this, &AMainCharacter::TurnCamera);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMainCharacter::LookUp);
+
+	PlayerInputComponent->BindAxis("Interact", this, &AMainCharacter::Interact);
 }
 
 void AMainCharacter::MoveForward(float InputValue)
@@ -110,4 +114,43 @@ void AMainCharacter::StartCrouch()
 void AMainCharacter::StopCrouch()
 {
 	UnCrouch();
+}
+
+void AMainCharacter::Interact(float InputValue)
+{
+	if (InputValue == 0.0f)
+	{
+		return;
+	}
+
+	if (!Camera)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Camera found on MainCharacter"));
+		return;
+	}
+
+	FCollisionShape CollisionBox = FCollisionShape::MakeBox(FVector(50.f, 50.f, 50.f));
+
+	FHitResult Hit;
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + Camera->GetForwardVector() * 1000.f;
+
+	bool bHit = GetWorld()->SweepSingleByChannel(
+		Hit,
+		Start,
+		End,
+		Camera->GetComponentQuat(),
+		ECC_Visibility,
+		CollisionBox
+	);
+
+	if (bHit && Hit.GetActor())
+	{
+		AActor* HitActor = Hit.GetActor();
+
+		if (HitActor->GetClass()->ImplementsInterface(UInteractible::StaticClass()))
+		{
+			IInteractible::Execute_Interact(HitActor, this);
+		}
+	}
 }

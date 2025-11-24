@@ -3,25 +3,21 @@
 
 #include "Interactibles/IButton.h"
 
-// Sets default values
 AIButton::AIButton()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+    RootComponent = Mesh;
 
+    OnInteracted.AddDynamic(this, &AIButton::Animate);
 }
 
-// Called when the game starts or when spawned
-void AIButton::BeginPlay()
+void AIButton::Interact_Implementation(AActor* Interactor)
 {
-	Super::BeginPlay();
-	
+    UE_LOG(LogTemp, Warning, TEXT("Bouton pressé par %s"), *Interactor->GetName());
+    OnInteracted.Broadcast(Interactor);
 }
 
-// Called every frame
-void AIButton::Tick(float DeltaTime)
+void AIButton::Animate(AActor* Interactor)
 {
-	Super::Tick(DeltaTime);
 
 }
-

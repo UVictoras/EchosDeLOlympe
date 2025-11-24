@@ -3,25 +3,14 @@
 
 #include "Interactibles/ILever.h"
 
-// Sets default values
 AILever::AILever()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+    RootComponent = Mesh;
 }
 
-// Called when the game starts or when spawned
-void AILever::BeginPlay()
+void AILever::Interact_Implementation(AActor* Interactor)
 {
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AILever::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+    UE_LOG(LogTemp, Warning, TEXT("Bouton pressé par %s"), *Interactor->GetName());
 
 }
-

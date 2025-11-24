@@ -42,4 +42,5 @@ protected:
 
 	void StartCrouch();
 	void StopCrouch();
+	void Interact(float InputValue);
 };
