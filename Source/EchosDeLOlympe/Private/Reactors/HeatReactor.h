@@ -5,17 +5,32 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Containers/Map.h"
-#include "Reactor.generated.h"
+#include "Components/ActorComponent.h"
+#include "HeatReactor.generated.h"
 
-class AHeatSource;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReact);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStopReact);
 
-UCLASS()
-class AReactor : public AActor
+class UHeatSourceComponent;
+
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class UHeatReactor : public UActorComponent
 {
 	GENERATED_BODY()
-	
-public:	
-	AReactor();
+
+public:
+	UHeatReactor();
+
+	bool IsActive;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnReact OnReact;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnStopReact OnStopReact;
+
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Init();
 
 protected:
 
@@ -26,27 +41,25 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _coolingDuration;
 
-	bool _isActive;
-
-	virtual void BeginPlay() override;	
-
 	UFUNCTION()
 	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	virtual void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
-	virtual void UpdateTemperature(AHeatSource* source);
-	
-	
+	virtual void UpdateTemperature(UHeatSourceComponent* source);
+
+
 	UFUNCTION(BlueprintNativeEvent)
 	void Cool();
 	virtual void Cool_Implementation();
+
 	UFUNCTION(BlueprintNativeEvent)
-	void Activate();
-	virtual void Activate_Implementation();
+	void ActivateReactor();
+	virtual void ActivateReactor_Implementation();
+
 	UFUNCTION(BlueprintNativeEvent)
-	void Deactivate();
-	virtual void Deactivate_Implementation();
+	void DeactivateReactor();
+	virtual void DeactivateReactor_Implementation();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -56,10 +69,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Timer")
 	float _timerInterval;
-	
+
 	UPrimitiveComponent* _reactorOverlapComponent;
 
 	UPROPERTY()
-	TMap<AHeatSource*, float> _objectsTemperature;
+	TMap<UHeatSourceComponent*, float> _objectsTemperature;
 
+		
 };

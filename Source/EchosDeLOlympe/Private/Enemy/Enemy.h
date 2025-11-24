@@ -3,15 +3,50 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Reactors/Reactor.h"
+#include "GameFramework/Character.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "Enemy.generated.h"
 
-/**
- * 
- */
+class UHeatReactor;
+
 UCLASS()
-class AEnemy : public AReactor
+class AEnemy : public ACharacter
 {
 	GENERATED_BODY()
+
+public:
+	AEnemy();
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UBehaviorTree* GetBehaviorTree();
+
+	bool IsActive;
+
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
+	UHeatReactor* _reactor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree* m_tree;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TArray<FVector> _patrolPoint;
 	
+	int _currentPatrolPoint  = 0.f;
+
+	virtual void BeginPlay() override;
+
+private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Catergory = "State", meta = (AllowPrivateAccess = "true"))
+	bool _IsStatic;
+
+	UFUNCTION()
+	void Activate();
+	UFUNCTION()
+	void Deactivate();
 };

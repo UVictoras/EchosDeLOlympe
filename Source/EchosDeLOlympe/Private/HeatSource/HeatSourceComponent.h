@@ -3,18 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Components/SphereComponent.h"
+#include "Components/ActorComponent.h"
 #include "Components/PrimitiveComponent.h"
-#include "HeatSource.generated.h"
+#include "HeatSourceComponent.generated.h"
 
-UCLASS()
-class AHeatSource : public AActor
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class UHeatSourceComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-
-private :
+private:
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _minTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")
@@ -24,24 +23,24 @@ private :
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _minDistance;
 
+	UPrimitiveComponent* _heatZone;
 
-	USphereComponent* _heatZone;
+	UPROPERTY(EditAnywhere)
+	FComponentReference _componentReference;
 
-
-	UFUNCTION()
-	void OnHeatZoneOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnHeatZoneEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	float GetDistance(UPrimitiveComponent* component);
-	
-public:	
-	AHeatSource();
+
+	UFUNCTION(BlueprintCallable)
+	void Init();
+
+public:
+
+	UHeatSourceComponent();
 
 	float GetObjectTemperature(UPrimitiveComponent* component);
 
 protected:
 	virtual void BeginPlay() override;
-
-
+		
 };
