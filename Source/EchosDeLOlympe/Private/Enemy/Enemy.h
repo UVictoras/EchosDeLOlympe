@@ -42,8 +42,8 @@ protected:
 
 private:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Catergory = "State", meta = (AllowPrivateAccess = "true"))
-	bool _IsStatic;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
+	bool _isStatic;
 
 	UFUNCTION()
 	void Activate();

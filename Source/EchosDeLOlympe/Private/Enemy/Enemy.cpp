@@ -25,7 +25,7 @@ void AEnemy::BeginPlay()
 		return;
 	
 	UBlackboardComponent* blackboard = controller->GetBlackboardComponent();
-	blackboard->SetValueAsBool("IsStatic", )
+	blackboard->SetValueAsBool("IsStatic", _isStatic);
 }
 
 void AEnemy::Activate()
