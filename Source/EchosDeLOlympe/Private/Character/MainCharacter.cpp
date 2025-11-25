@@ -98,7 +98,7 @@ void AMainCharacter::StrafeSide(float InputValue)
 
 void AMainCharacter::TurnCamera(float InputValue)
 {
-	AddControllerYawInput(InputValue);
+	AddControllerYawInput(-InputValue);
 }
 
 void AMainCharacter::LookUp(float InputValue)
