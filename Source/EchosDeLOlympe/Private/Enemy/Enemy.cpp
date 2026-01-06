@@ -24,18 +24,21 @@ void AEnemy::BeginPlay()
 	if (!controller)
 		return;
 	
-	UBlackboardComponent* blackboard = controller->GetBlackboardComponent();
-	blackboard->SetValueAsBool("IsStatic", _isStatic);
+	_blackboard = controller->GetBlackboardComponent();
+	_blackboard->SetValueAsBool("IsStatic", _isStatic);
+	_blackboard->SetValueAsBool("IsActive", IsActive);
 }
 
 void AEnemy::Activate()
 {
 	IsActive = true;
+	_blackboard->SetValueAsBool("IsActive", IsActive);
 }
 
 void AEnemy::Deactivate()
 {
 	IsActive = false;
+	_blackboard->SetValueAsBool("IsActive", IsActive);
 }
 
 void AEnemy::Tick(float DeltaTime)

@@ -28,9 +28,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	FComponentReference _componentReference;
 
-	UFUNCTION()
-	float GetDistance(UPrimitiveComponent* component);
-
 	UFUNCTION(BlueprintCallable)
 	void Init();
 
@@ -38,7 +35,7 @@ public:
 
 	UHeatSourceComponent();
 
-	float GetObjectTemperature(UPrimitiveComponent* component);
+	float GetTemperatureAtLocation(FVector position);
 
 protected:
 	virtual void BeginPlay() override;

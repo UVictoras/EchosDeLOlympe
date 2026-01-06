@@ -26,11 +26,13 @@ void AEnemyController::OnPossess(APawn* InPawn)
 	UseBlackboard(tree->BlackboardAsset, board);
 	Blackboard = board;
 	RunBehaviorTree(tree);
+
+
 }
 
 void AEnemyController::SetupPerceptionSystem()
 {
-	/*m_sightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+	m_sightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 
 	if (!m_sightConfig)
 		return;
@@ -47,8 +49,8 @@ void AEnemyController::SetupPerceptionSystem()
 	m_sightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	GetPerceptionComponent()->SetDominantSense(*m_sightConfig->GetSenseImplementation());
-	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AAIEnemyController::OnTargetDetected);
-	GetPerceptionComponent()->ConfigureSense(*m_sightConfig);*/
+	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyController::OnTargetDetected);
+	GetPerceptionComponent()->ConfigureSense(*m_sightConfig);
 
 }
 

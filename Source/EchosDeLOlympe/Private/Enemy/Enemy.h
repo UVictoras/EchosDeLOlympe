@@ -45,8 +45,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
 	bool _isStatic;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float _activationCd;
+
+	UBlackboardComponent* _blackboard;
+
 	UFUNCTION()
 	void Activate();
+
 	UFUNCTION()
 	void Deactivate();
 };

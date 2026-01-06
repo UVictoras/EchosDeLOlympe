@@ -39,7 +39,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _activationTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")
-	float _coolingDuration;
+	float _activationDuration;
 
 	UFUNCTION()
 	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -54,6 +54,10 @@ protected:
 	virtual void Cool_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent)
+	void Heated();
+	virtual void Heated_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent)
 	void ActivateReactor();
 	virtual void ActivateReactor_Implementation();
 
@@ -62,10 +66,12 @@ protected:
 	virtual void DeactivateReactor_Implementation();
 
 private:
+
 	UPROPERTY(EditAnywhere)
 	FComponentReference _componentReference;
 
 	FTimerHandle _timerHandle;
+	FTimerHandle _temperatureTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category = "Timer")
 	float _timerInterval;
