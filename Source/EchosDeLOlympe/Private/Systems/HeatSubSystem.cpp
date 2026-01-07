@@ -37,5 +37,8 @@ float UHeatSubSystem::GetTemperatureAtLocation(FVector location)
 {
 	UHeatSourceComponent* source = GetNearestHeatSource(location);
 
+	if (source == nullptr)
+		return 0;
+
 	return source->GetTemperatureAtLocation(location);
 }
