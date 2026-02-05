@@ -6,6 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/MainCharacter.h"
 
 
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
@@ -26,7 +27,7 @@ void AEnemyController::OnPossess(APawn* InPawn)
 	UseBlackboard(tree->BlackboardAsset, board);
 	Blackboard = board;
 	RunBehaviorTree(tree);
-
+	
 
 }
 
@@ -42,7 +43,7 @@ void AEnemyController::SetupPerceptionSystem()
 	m_sightConfig->SightRadius = 500.f;
 	m_sightConfig->LoseSightRadius = m_sightConfig->SightRadius + 25.f;
 	m_sightConfig->PeripheralVisionAngleDegrees = 90.f;
-	m_sightConfig->SetMaxAge(5.f);
+	m_sightConfig->SetMaxAge(0.f);
 	m_sightConfig->AutoSuccessRangeFromLastSeenLocation = 520.f;
 	m_sightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	m_sightConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -55,6 +56,23 @@ void AEnemyController::SetupPerceptionSystem()
 }
 
 void AEnemyController::OnTargetDetected(AActor* actor, FAIStimulus const stimulus)
+{
+	AMainCharacter* player = Cast<AMainCharacter>(actor);
+	if (!player) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Stimuli : %s"), stimulus.WasSuccessfullySensed() ? TEXT("true") : TEXT("false"));
+	if (stimulus.WasSuccessfullySensed())
+	{
+		Blackboard.Get()->SetValueAsBool("PlayerInView", true);
+	}
+
+	else if (!stimulus.WasSuccessfullySensed())
+	{
+		Blackboard.Get()->SetValueAsBool("PlayerInView", false);
+	}
+}
+
+void AEnemyController::OnTargetLoseDetection(AActor* actor)
 {
 
 }

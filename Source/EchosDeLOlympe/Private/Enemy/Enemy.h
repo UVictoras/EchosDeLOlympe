@@ -21,6 +21,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
 	UBehaviorTree* GetBehaviorTree();
 
 	bool IsActive;

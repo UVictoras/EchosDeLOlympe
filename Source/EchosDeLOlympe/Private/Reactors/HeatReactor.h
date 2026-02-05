@@ -79,7 +79,7 @@ private:
 	UPrimitiveComponent* _reactorOverlapComponent;
 
 	UPROPERTY()
-	TMap<UHeatSourceComponent*, float> _objectsTemperature;
+	int _overlappedSourceCount;
 
 		
 };

@@ -4,6 +4,7 @@
 #include "Reactors/HeatReactor.h"
 
 #include "HeatSource/HeatSourceComponent.h"
+#include "Systems/HeatSubSystem.h"
 
 UHeatReactor::UHeatReactor()
 {
@@ -31,7 +32,7 @@ void UHeatReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AA
 {
 	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
 	{
-		_objectsTemperature.Emplace(source, source->GetTemperatureAtLocation(_reactorOverlapComponent->GetComponentLocation()));
+		_overlappedSourceCount++;
 
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindUFunction(this, FName("UpdateTemperature"), source);
@@ -44,9 +45,9 @@ void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AAct
 {
 	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
 	{
-		_objectsTemperature.Remove(source);
+		_overlappedSourceCount = FMath::Clamp(_overlappedSourceCount - 1,0,_overlappedSourceCount);
 
-		if (_objectsTemperature.Num() == 0)
+		if (_overlappedSourceCount == 0)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
 			Cool();
@@ -59,22 +60,7 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 {
 	float maxTemp = 0;
 
-	for (TPair<UHeatSourceComponent*, float>& Elem : _objectsTemperature)
-	{
-		UHeatSourceComponent* source = Elem.Key;
-		float& temperature = Elem.Value;
-
-		if (IsValid(source))
-		{
-			temperature = source->GetTemperatureAtLocation(_reactorOverlapComponent->GetComponentLocation());
-
-			if (temperature > maxTemp)
-				maxTemp = temperature;
-		}
-
-	}
-
-	_currentTemperature = maxTemp;
+	_currentTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation());
 
 	if (_currentTemperature >= _activationTemperature && !IsActive )
 	{
@@ -104,7 +90,6 @@ void UHeatReactor::Heated_Implementation()
 {
 	IsActive = true;
 
-	UE_LOG(LogTemp, Warning, TEXT("Heated"));
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("ActivateReactor"), this);
 
@@ -114,14 +99,12 @@ void UHeatReactor::Heated_Implementation()
 
 void UHeatReactor::ActivateReactor_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Activate"));
 
 	OnReact.Broadcast();
 }
 
 void UHeatReactor::DeactivateReactor_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Deactivate"));
 	OnStopReact.Broadcast();
 	IsActive = false;
 }

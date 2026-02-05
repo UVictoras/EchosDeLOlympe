@@ -27,5 +27,7 @@ private:
 
 	UFUNCTION()
 	void OnTargetDetected(AActor* actor, FAIStimulus const stimulus);
+	UFUNCTION()
+	void OnTargetLoseDetection(AActor* actor);
 
 };
