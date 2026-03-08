@@ -10,6 +10,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReact);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStopReact);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHeating);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCooling);
 
 class UHeatSourceComponent;
 
@@ -28,9 +30,20 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnStopReact OnStopReact;
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnHeating OnHeating;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnCooling OnCooling;
+
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Init();
+
+	float GetCurrentTemperature();
+
+	float GetCurrentCoolDuration();
+
+	float GetBaseCoolDuration();
 
 protected:
 
@@ -40,6 +53,13 @@ protected:
 	float _activationTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _activationDuration;
+
+	UPROPERTY(EditAnywhere, Category = "Temperature")
+	float _baseCoolDuration;
+
+	float _currentCoolDuration;
+
+
 
 	UFUNCTION()
 	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -79,7 +99,7 @@ private:
 	UPrimitiveComponent* _reactorOverlapComponent;
 
 	UPROPERTY()
-	int _overlappedSourceCount;
+	int _overlappedSourceCount = 1;
 
 		
 };

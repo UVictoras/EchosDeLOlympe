@@ -26,6 +26,14 @@ public:
 
 	bool IsActive;
 
+	UFUNCTION(BlueprintCallable)
+	float GetCurrentTemperature();
+
+	UFUNCTION(BlueprintCallable)
+	float GetCoolDuration();
+
+	UFUNCTION(BlueprintCallable)
+	float GetCurrentCoolDuration();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reactor")
@@ -39,12 +47,16 @@ protected:
 	
 	int _currentPatrolPoint  = 0.f;
 
+	float _coolDuration;
+	float _currentCoolDuration;
+
 	virtual void BeginPlay() override;
 
-private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
 	bool _isStatic;
+
+private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float _activationCd;
@@ -56,4 +68,17 @@ private:
 
 	UFUNCTION()
 	void Deactivate();
+
+	UFUNCTION()
+	void Heat();
+
+	UFUNCTION()
+	void Cool();
+
+	UFUNCTION()
+	void NeedHeat();
+
+	FTimerHandle _needHeatHandle;
+
+
 };

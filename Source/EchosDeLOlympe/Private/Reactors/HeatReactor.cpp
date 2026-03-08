@@ -28,6 +28,22 @@ void UHeatReactor::Init()
 	}
 }
 
+float UHeatReactor::GetCurrentTemperature()
+{
+	return _currentTemperature;
+}
+
+float UHeatReactor::GetCurrentCoolDuration()
+{
+	return _currentCoolDuration;
+}
+
+float UHeatReactor::GetBaseCoolDuration()
+{
+	return _baseCoolDuration;
+}
+
+
 void UHeatReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
@@ -80,9 +96,11 @@ void UHeatReactor::Cool_Implementation()
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("DeactivateReactor"), this);
 
-	float duration = _activationDuration / (_activationTemperature / _currentTemperature);
+	_currentCoolDuration = _baseCoolDuration / (_baseCoolDuration / _currentTemperature);
 
-	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, duration, false);
+	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, _currentCoolDuration, false);
+
+	OnCooling.Broadcast();
 
 }
 
@@ -94,6 +112,8 @@ void UHeatReactor::Heated_Implementation()
 	TimerDelegate.BindUFunction(this, FName("ActivateReactor"), this);
 
 	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, _activationDuration, false);
+
+	OnHeating.Broadcast();
 
 }
 

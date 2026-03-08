@@ -14,31 +14,58 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AEnemyController* controller = Cast<AEnemyController>(GetController());;
+
+	if (!controller)
+		return;
+
+	_blackboard = controller->GetBlackboardComponent();
+	_blackboard->SetValueAsBool("IsStatic", _isStatic);
+	_blackboard->SetValueAsBool("IsActive", IsActive);
+
 	_reactor->Init();
 
 	_reactor->OnReact.AddDynamic(this, &AEnemy::Activate);
 	_reactor->OnStopReact.AddDynamic(this, &AEnemy::Deactivate);
+	_reactor->OnHeating.AddDynamic(this, &AEnemy::Heat);
+	_reactor->OnCooling.AddDynamic(this, &AEnemy::Cool);
 
-	AEnemyController* controller = Cast<AEnemyController>(GetController());
-	
-	if (!controller)
-		return;
-	
-	_blackboard = controller->GetBlackboardComponent();
-	_blackboard->SetValueAsBool("IsStatic", _isStatic);
-	_blackboard->SetValueAsBool("IsActive", IsActive);
 }
 
 void AEnemy::Activate()
 {
 	IsActive = true;
 	_blackboard->SetValueAsBool("IsActive", IsActive);
+	_blackboard->SetValueAsBool("NeedToHeat", false);
 }
 
 void AEnemy::Deactivate()
 {
 	IsActive = false;
 	_blackboard->SetValueAsBool("IsActive", IsActive);
+	_coolDuration = 0;
+}
+
+void AEnemy::Heat()
+{
+}
+
+void AEnemy::Cool()
+{
+	_coolDuration = _reactor->GetBaseCoolDuration();
+	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
+
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindUFunction(this, FName("NeedHeat"), this);
+	GetWorld()->GetTimerManager().SetTimer(_needHeatHandle, TimerDelegate, _currentCoolDuration * 0.4, false);
+
+	//UE_LOG(LogTemp, Warning, TEXT("Base Count: %f"), _coolDuration);
+}
+
+void AEnemy::NeedHeat()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+	_blackboard->SetValueAsBool("NeedToHeat", true);
 }
 
 void AEnemy::Tick(float DeltaTime)
@@ -56,4 +83,19 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 UBehaviorTree* AEnemy::GetBehaviorTree()
 {
 	return m_tree;
+}
+
+float AEnemy::GetCurrentTemperature()
+{
+	return _reactor->GetCurrentTemperature();
+}
+
+float AEnemy::GetCoolDuration()
+{
+	return _coolDuration;
+}
+
+float AEnemy::GetCurrentCoolDuration()
+{
+	return _currentCoolDuration;
 }
