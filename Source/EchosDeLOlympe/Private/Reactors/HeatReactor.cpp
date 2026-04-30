@@ -61,6 +61,7 @@ void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AAct
 {
 	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Overlapp count : %f"),_overlappedSourceCount);
 		_overlappedSourceCount = FMath::Clamp(_overlappedSourceCount - 1,0,_overlappedSourceCount);
 
 		if (_overlappedSourceCount == 0)
@@ -82,17 +83,16 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 	{
 		Heated();
 	}
-
-	else if (IsActive && _currentTemperature <= _activationTemperature)
-	{
-		Cool();
-	}
+	//else if (IsActive && _currentTemperature <= _activationTemperature)
+	//{
+	//	Cool();
+	//}
 }
 
 void UHeatReactor::Cool_Implementation()
 {
 	IsActive = false;
-
+	UE_LOG(LogTemp, Warning, TEXT("REACTOR COOL"));
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("DeactivateReactor"), this);
 
@@ -125,6 +125,7 @@ void UHeatReactor::ActivateReactor_Implementation()
 
 void UHeatReactor::DeactivateReactor_Implementation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("REACTOR DEACTIVATE"));
 	OnStopReact.Broadcast();
 	IsActive = false;
 }

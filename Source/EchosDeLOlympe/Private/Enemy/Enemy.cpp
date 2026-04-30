@@ -34,6 +34,7 @@ void AEnemy::BeginPlay()
 
 void AEnemy::Activate()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Activate"));
 	IsActive = true;
 	_blackboard->SetValueAsBool("IsActive", IsActive);
 	_blackboard->SetValueAsBool("NeedToHeat", false);
@@ -41,6 +42,7 @@ void AEnemy::Activate()
 
 void AEnemy::Deactivate()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Deactivate"));
 	IsActive = false;
 	_blackboard->SetValueAsBool("IsActive", IsActive);
 	_coolDuration = 0;
@@ -52,6 +54,7 @@ void AEnemy::Heat()
 
 void AEnemy::Cool()
 {
+	UE_LOG(LogTemp, Warning, TEXT("FROOOOOOOOOOOOOID"));
 	_coolDuration = _reactor->GetBaseCoolDuration();
 	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
 
