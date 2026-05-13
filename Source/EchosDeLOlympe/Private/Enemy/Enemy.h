@@ -80,8 +80,5 @@ private:
 
 	FTimerHandle _needHeatHandle;
 
-	float time = 0;
-	bool debugtime = false;
-
 
 };

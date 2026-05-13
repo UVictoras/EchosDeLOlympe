@@ -66,21 +66,12 @@ void AEnemy::Cool()
 
 void AEnemy::NeedHeat()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 	_blackboard->SetValueAsBool("NeedToHeat", true);
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (debugtime)
-	{
-		time += DeltaTime;
-
-		UE_LOG(LogTemp, Warning, TEXT("TEMPS : %f"), time);
-
-	}
 
 }
 
