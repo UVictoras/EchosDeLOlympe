@@ -63,7 +63,7 @@ void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		_overlappedSourceCount = FMath::Clamp(_overlappedSourceCount - 1,0,_overlappedSourceCount);
 
-		if (_overlappedSourceCount == 0)
+		if (_overlappedSourceCount == 0 && !_isCooling)
 		{
 			GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
 			Cool();
@@ -74,7 +74,6 @@ void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AAct
 
 void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 {
-	float maxTemp = 0;
 
 	_currentTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation());
 
@@ -83,7 +82,7 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 		Heated();
 	}
 
-	else if (IsActive && _currentTemperature <= _activationTemperature)
+	else if (IsActive && _currentTemperature <= _activationTemperature && !_isCooling)
 	{
 		Cool();
 	}
@@ -91,13 +90,17 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 
 void UHeatReactor::Cool_Implementation()
 {
+	_isCooling = true;
 	IsActive = false;
+
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("DeactivateReactor"), this);
 
-	_currentCoolDuration = _baseCoolDuration / (_baseCoolDuration / _currentTemperature);
+	_currentCoolDuration = (_activationTemperature / _currentTemperature) * _baseCoolDuration;
 
+	UE_LOG(LogTemp, Warning, TEXT("CoolTime : %f"), _currentCoolDuration);
+	
 	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, _currentCoolDuration, false);
 
 	OnCooling.Broadcast();
@@ -106,6 +109,7 @@ void UHeatReactor::Cool_Implementation()
 
 void UHeatReactor::Heated_Implementation()
 {
+	_isCooling = false;
 	IsActive = true;
 
 	FTimerDelegate TimerDelegate;

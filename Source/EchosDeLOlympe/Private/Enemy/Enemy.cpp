@@ -52,6 +52,7 @@ void AEnemy::Heat()
 
 void AEnemy::Cool()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Enemy Cool"));
 	_coolDuration = _reactor->GetBaseCoolDuration();
 	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
 

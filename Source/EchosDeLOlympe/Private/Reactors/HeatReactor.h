@@ -48,6 +48,7 @@ public:
 protected:
 
 	float _currentTemperature;
+	bool _isCooling;
 
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _activationTemperature;
