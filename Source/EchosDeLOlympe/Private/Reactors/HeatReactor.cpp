@@ -97,9 +97,10 @@ void UHeatReactor::Cool_Implementation()
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("DeactivateReactor"), this);
 
-	_currentCoolDuration = (_activationTemperature / _currentTemperature) * _baseCoolDuration;
+	_currentCoolDuration = (_currentTemperature / _activationTemperature) * _baseCoolDuration;
 
 	UE_LOG(LogTemp, Warning, TEXT("CoolTime : %f"), _currentCoolDuration);
+	UE_LOG(LogTemp, Warning, TEXT("Temp : %f"), _currentTemperature);
 	
 	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, _currentCoolDuration, false);
 

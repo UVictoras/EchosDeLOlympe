@@ -52,6 +52,7 @@ void AEnemy::Heat()
 
 void AEnemy::Cool()
 {
+	debugtime = true;
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Cool"));
 	_coolDuration = _reactor->GetBaseCoolDuration();
 	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
@@ -72,6 +73,14 @@ void AEnemy::NeedHeat()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (debugtime)
+	{
+		time += DeltaTime;
+
+		UE_LOG(LogTemp, Warning, TEXT("TEMPS : %f"), time);
+
+	}
 
 }
 
