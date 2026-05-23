@@ -153,4 +153,10 @@ void AMainCharacter::Interact(float InputValue)
 			IInteractible::Execute_Interact(HitActor, this);
 		}
 	}
+
+}
+
+void AMainCharacter::GetCaught()
+{
+	UE_LOG(LogTemp, Warning, TEXT("CAUGHT"));
 }

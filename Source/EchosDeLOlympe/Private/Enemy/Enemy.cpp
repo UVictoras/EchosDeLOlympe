@@ -52,7 +52,6 @@ void AEnemy::Heat()
 
 void AEnemy::Cool()
 {
-	debugtime = true;
 	UE_LOG(LogTemp, Warning, TEXT("Enemy Cool"));
 	_coolDuration = _reactor->GetBaseCoolDuration();
 	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
@@ -61,7 +60,6 @@ void AEnemy::Cool()
 	TimerDelegate.BindUFunction(this, FName("NeedHeat"), this);
 	GetWorld()->GetTimerManager().SetTimer(_needHeatHandle, TimerDelegate, _currentCoolDuration * 0.4, false);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Base Count: %f"), _coolDuration);
 }
 
 void AEnemy::NeedHeat()
