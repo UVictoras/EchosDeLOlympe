@@ -8,7 +8,7 @@
 #include "HeatSourceComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UHeatSourceComponent : public UActorComponent
 {
 	GENERATED_BODY()
