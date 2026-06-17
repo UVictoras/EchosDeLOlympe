@@ -15,6 +15,10 @@ void UHeatSourceComponent::Init()
 	{
 		Cast<USphereComponent>(_heatZone)->SetSphereRadius(_emissionRadius);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Heat Zone not defined !"));
+	}
 
 }
 
