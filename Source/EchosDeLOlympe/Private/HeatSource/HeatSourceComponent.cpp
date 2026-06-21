@@ -39,6 +39,9 @@ void UHeatSourceComponent::BeginPlay()
 
 float UHeatSourceComponent::GetTemperatureAtLocation(FVector position)
 {
+	if (!_isActive)
+		return 0;
+
 	float distance = FVector::Distance(_heatZone->GetComponentLocation(),position);
 
 	float temperature = FMath::Clamp(_minTemperature + (_maxTemperature - _minTemperature) * (1 - (distance - _minDistance) / (_emissionRadius - _minDistance)),0,_maxTemperature);
@@ -46,3 +49,17 @@ float UHeatSourceComponent::GetTemperatureAtLocation(FVector position)
 	return temperature;
 }
 
+void UHeatSourceComponent::DeactivateSource()
+{
+	_isActive = false;
+}
+
+void UHeatSourceComponent::ActivateSource()
+{
+	_isActive = true;
+}
+
+bool UHeatSourceComponent::IsActive()
+{
+	return _isActive;
+}

@@ -23,6 +23,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _minDistance;
 
+	bool _isActive = true;
+
 	UPrimitiveComponent* _heatZone;
 
 	UPROPERTY(EditAnywhere)
@@ -36,6 +38,12 @@ public:
 	UHeatSourceComponent();
 
 	float GetTemperatureAtLocation(FVector position);
+
+	UFUNCTION(BlueprintCallable)
+	void DeactivateSource();
+	UFUNCTION(BlueprintCallable)
+	void ActivateSource();
+	bool IsActive();
 
 protected:
 	virtual void BeginPlay() override;
