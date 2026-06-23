@@ -39,11 +39,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void Init();
 
-	float GetCurrentTemperature();
+	UFUNCTION(BlueprintCallable)
+	virtual float GetCurrentTemperature();
 
-	float GetCurrentCoolDuration();
+	UFUNCTION(BlueprintCallable)
+	virtual float GetCurrentCoolDuration();
 
-	float GetBaseCoolDuration();
+	UFUNCTION(BlueprintCallable)
+	virtual float GetBaseCoolDuration();
 
 protected:
 

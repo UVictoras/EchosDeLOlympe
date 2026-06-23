@@ -57,18 +57,17 @@ void AEnemyController::SetupPerceptionSystem()
 
 void AEnemyController::OnTargetDetected(AActor* actor, FAIStimulus const stimulus)
 {
-	AMainCharacter* player = Cast<AMainCharacter>(actor);
-	if (!player) return;
+	if (!actor->ActorHasTag("Player")) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("Stimuli : %s"), stimulus.WasSuccessfullySensed() ? TEXT("true") : TEXT("false"));
+	//UE_LOG(LogTemp, Warning, TEXT("Stimuli : %s"), stimulus.WasSuccessfullySensed() ? TEXT("true") : TEXT("false"));
 	if (stimulus.WasSuccessfullySensed())
 	{
-		Blackboard.Get()->SetValueAsBool("PlayerInView", true);
+		Blackboard.Get()->SetValueAsBool("PlayerInSight", true);
 	}
 
 	else if (!stimulus.WasSuccessfullySensed())
 	{
-		Blackboard.Get()->SetValueAsBool("PlayerInView", false);
+		Blackboard.Get()->SetValueAsBool("PlayerInSight", false);
 	}
 }
 
