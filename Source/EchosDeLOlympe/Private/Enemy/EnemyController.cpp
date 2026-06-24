@@ -74,8 +74,6 @@ void AEnemyController::OnTargetDetected(AActor* actor, FAIStimulus const stimulu
 	{
 		if (stimulus.Tag == "Escape")
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Esape"));
-
 			Blackboard.Get()->SetValueAsBool("NeedToEscape", true);
 
 			GetWorldTimerManager().ClearTimer(_escapeTimerHandle);
@@ -98,6 +96,5 @@ void AEnemyController::OnTargetLoseDetection(AActor* actor)
 
 void AEnemyController::StopEscaping()
 {
-	UE_LOG(LogTemp, Warning, TEXT("STOP Esaping"));
 	Blackboard.Get()->SetValueAsBool("NeedToEscape", false);
 }
