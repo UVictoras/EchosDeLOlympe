@@ -22,6 +22,7 @@ protected:
 
 private:
 	class UAISenseConfig_Sight* m_sightConfig;
+	class UAISenseConfig_Hearing* m_hearingConfig;
 
 	void SetupPerceptionSystem();
 
@@ -29,5 +30,12 @@ private:
 	void OnTargetDetected(AActor* actor, FAIStimulus const stimulus);
 	UFUNCTION()
 	void OnTargetLoseDetection(AActor* actor);
+
+	FTimerHandle _escapeTimerHandle;
+	UPROPERTY(EditDefaultsOnly, Category = "Escape")
+	float _escapeDuration = 3.0f;
+
+	UFUNCTION()
+	void StopEscaping();
 
 };
