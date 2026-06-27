@@ -23,7 +23,8 @@ class UHeatReactor : public UActorComponent
 public:
 	UHeatReactor();
 
-	bool IsActive;
+	UPROPERTY(BlueprintReadOnly)
+	bool IsReactorActive;
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnReact OnReact;
@@ -39,10 +40,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void Init();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual float GetCurrentTemperature();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,BlueprintPure)
 	virtual float GetCurrentCoolDuration();
 
 	UFUNCTION(BlueprintCallable)
@@ -97,8 +98,8 @@ private:
 	FTimerHandle _timerHandle;
 	FTimerHandle _temperatureTimerHandle;
 
-	UPROPERTY(EditAnywhere, Category = "Timer")
-	float _timerInterval;
+	UPROPERTY(EditAnywhere, Category = "Temperature")
+	float _temperatureUpdateTimer; // At 0 temperature is not updating
 
 	UPrimitiveComponent* _reactorOverlapComponent;
 

@@ -20,7 +20,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UHeatSourceComponent* GetNearestHeatSource(FVector location);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetTemperatureAtLocation(FVector location);
 
 private:
