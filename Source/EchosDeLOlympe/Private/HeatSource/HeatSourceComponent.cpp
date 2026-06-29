@@ -19,22 +19,22 @@ void UHeatSourceComponent::Init()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Heat Zone not defined !"));
 	}
-
 }
 
 void UHeatSourceComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	GetWorld()->GetSubsystem<UHeatSubSystem>()->RegisterSource(this);
 
-	//if (_heatZone)
-	//	_heatZone->SetSphereRadius(_emissionRadius);
+}
 
-	//else
-	//	UE_LOG(LogTemp, Warning, TEXT("Collision Sphere not set"));
+void UHeatSourceComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
+{
+	if (!IsValid(GetWorld())) return;
+	if (!IsValid(GetWorld()->GetSubsystem<UHeatSubSystem>())) return;
 
+	GetWorld()->GetSubsystem<UHeatSubSystem>()->UnregisterSource(this);
 }
 
 float UHeatSourceComponent::GetTemperatureAtLocation(FVector position)
