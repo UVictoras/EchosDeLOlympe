@@ -23,7 +23,7 @@ UHeatSourceComponent* UHeatSubSystem::GetNearestHeatSource(FVector location)
 	for (UHeatSourceComponent* source : _registeredHeatSources)
 	{
 		float currentDist = FVector::Distance(source->GetOwner()->GetActorLocation(), location);
-		if (currentDist <= minDist && source->IsActive())
+		if (currentDist <= minDist)
 		{
 			minDist = currentDist;
 			nearestSource = source;

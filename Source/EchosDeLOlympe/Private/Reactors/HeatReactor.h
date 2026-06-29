@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetBaseCoolDuration();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual float GetActivationTemperature();
+
 protected:
 
 	float _currentTemperature;

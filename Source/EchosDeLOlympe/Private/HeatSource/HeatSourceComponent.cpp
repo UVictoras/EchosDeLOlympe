@@ -39,7 +39,7 @@ void UHeatSourceComponent::BeginPlay()
 
 float UHeatSourceComponent::GetTemperatureAtLocation(FVector position)
 {
-	if (!_isActive)
+	if (!_isSourceActive)
 		return 0;
 
 	float distance = FVector::Distance(_heatZone->GetComponentLocation(),position);
@@ -51,15 +51,18 @@ float UHeatSourceComponent::GetTemperatureAtLocation(FVector position)
 
 void UHeatSourceComponent::DeactivateSource()
 {
-	_isActive = false;
+	_isSourceActive = false;
+	GetWorld()->GetSubsystem<UHeatSubSystem>()->UnregisterSource(this);
 }
 
 void UHeatSourceComponent::ActivateSource()
 {
-	_isActive = true;
+	_isSourceActive = true;
+	GetWorld()->GetSubsystem<UHeatSubSystem>()->RegisterSource(this);
+
 }
 
-bool UHeatSourceComponent::IsActive()
+bool UHeatSourceComponent::IsSourceActive()
 {
-	return _isActive;
+	return _isSourceActive;
 }

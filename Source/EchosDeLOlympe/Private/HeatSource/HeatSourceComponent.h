@@ -23,7 +23,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _minDistance;
 
-	bool _isActive = true;
+	bool _isSourceActive = true;
 
 	UPrimitiveComponent* _heatZone;
 
@@ -43,7 +43,7 @@ public:
 	void DeactivateSource();
 	UFUNCTION(BlueprintCallable)
 	void ActivateSource();
-	bool IsActive();
+	bool IsSourceActive();
 
 protected:
 	virtual void BeginPlay() override;
