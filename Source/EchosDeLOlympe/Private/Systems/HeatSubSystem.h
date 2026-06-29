@@ -15,7 +15,9 @@ class UHeatSubSystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
 	void RegisterSource(UHeatSourceComponent* source);
+	UFUNCTION(BlueprintCallable)
 	void UnregisterSource(UHeatSourceComponent* source);
 
 	UFUNCTION(BlueprintCallable)
