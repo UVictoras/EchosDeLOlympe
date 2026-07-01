@@ -7,7 +7,6 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Character/MainCharacter.h"
 
 
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
