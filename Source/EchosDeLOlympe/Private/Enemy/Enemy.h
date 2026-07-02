@@ -56,13 +56,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
 	bool _isStatic;
 
-private:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float _activationCd;
-
-	UBlackboardComponent* _blackboard;
-
 	UFUNCTION()
 	void Activate();
 
@@ -77,6 +70,13 @@ private:
 
 	UFUNCTION()
 	void NeedHeat();
+
+private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float _activationCd;
+
+	UBlackboardComponent* _blackboard;
 
 	FTimerHandle _needHeatHandle;
 

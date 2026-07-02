@@ -14,18 +14,10 @@ UHeatReactor::UHeatReactor()
 void UHeatReactor::Init()
 {
 
-	_reactorOverlapComponent = Cast<UPrimitiveComponent>(_componentReference.GetComponent(GetOwner()));
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindUFunction(this, FName("UpdateTemperature"));
 
-	if (_reactorOverlapComponent)
-	{
-		_reactorOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &UHeatReactor::OnReactorOverlap);
-		_reactorOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &UHeatReactor::OnReactorEndOverlap);
-	}
-
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Reactor Overlap Component not Defined"));
-	}
+	GetWorld()->GetTimerManager().SetTimer(_timerHandle, TimerDelegate, _temperatureUpdateTimer, true);
 }
 
 float UHeatReactor::GetCurrentTemperature()
@@ -48,40 +40,18 @@ float UHeatReactor::GetActivationTemperature()
 	return _activationTemperature;
 }
 
-
-void UHeatReactor::OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UHeatReactor::UpdateTemperature()
 {
-	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
+	_targetTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation());
+
+	if (_targetTemperature < _currentTemperature)
 	{
-		_overlappedSourceCount++;
-
-		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindUFunction(this, FName("UpdateTemperature"), source);
-
-		GetWorld()->GetTimerManager().SetTimer(_timerHandle, TimerDelegate, _temperatureUpdateTimer, true);
+		_currentTemperature = FMath::FInterpConstantTo(_currentTemperature, _targetTemperature, _temperatureUpdateTimer, _activationTemperature / _baseCoolDuration);
 	}
-}
-
-void UHeatReactor::OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (UHeatSourceComponent* source = OtherActor->GetComponentByClass<UHeatSourceComponent>())
+	else if (_targetTemperature > _currentTemperature)
 	{
-		_overlappedSourceCount = FMath::Clamp(_overlappedSourceCount - 1,0,_overlappedSourceCount);
-
-		//if (_overlappedSourceCount == 0 && !_isCooling &&)
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("Temp at location : %f"), GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation()));
-		//	GetWorld()->GetTimerManager().ClearTimer(_timerHandle);
-		//	Cool();
-		//}
+		_currentTemperature = FMath::FInterpConstantTo(_currentTemperature, _targetTemperature, _temperatureUpdateTimer, _activationTemperature / _activationDuration);
 	}
-
-}
-
-void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
-{
-
-	_currentTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation());
 
 	if (_currentTemperature >= _activationTemperature && !IsReactorActive)
 	{
@@ -90,12 +60,11 @@ void UHeatReactor::UpdateTemperature(UHeatSourceComponent* source)
 
 	else if (IsReactorActive && _currentTemperature <= _activationTemperature && !_isCooling)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CurrentTemp : %f"), _currentTemperature);
 		Cool();
 	}
 }
 
-void UHeatReactor::Cool_Implementation()
+void UHeatReactor::Cool()
 {
 	_isCooling = true;
 	IsReactorActive = false;
@@ -103,10 +72,7 @@ void UHeatReactor::Cool_Implementation()
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("DeactivateReactor"), this);
-
-	_currentCoolDuration = (_currentTemperature / _activationTemperature) * _baseCoolDuration;
-	UE_LOG(LogTemp, Warning, TEXT("BASE COOL DURATION : %f"), _baseCoolDuration);
-	UE_LOG(LogTemp, Warning, TEXT("CURRETN FUCKING COOL DURATION : %f"), _currentCoolDuration);
+	_currentCoolDuration = (_activationTemperature - _targetTemperature) / (_activationTemperature / _baseCoolDuration);
 	
 	GetWorld()->GetTimerManager().SetTimer(_temperatureTimerHandle, TimerDelegate, _currentCoolDuration, false);
 
@@ -114,7 +80,7 @@ void UHeatReactor::Cool_Implementation()
 
 }
 
-void UHeatReactor::Heated_Implementation()
+void UHeatReactor::Heated()
 {
 	_isCooling = false;
 	IsReactorActive = true;
@@ -128,13 +94,13 @@ void UHeatReactor::Heated_Implementation()
 
 }
 
-void UHeatReactor::ActivateReactor_Implementation()
+void UHeatReactor::ActivateReactor()
 {
 
 	OnReact.Broadcast();
 }
 
-void UHeatReactor::DeactivateReactor_Implementation()
+void UHeatReactor::DeactivateReactor()
 {
 	OnStopReact.Broadcast();
 	IsReactorActive = false;

@@ -49,21 +49,20 @@ void AEnemy::Deactivate()
 void AEnemy::Heat()
 {
 }
-
 void AEnemy::Cool()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enemy Cool"));
 	_coolDuration = _reactor->GetBaseCoolDuration();
 	_currentCoolDuration = _reactor->GetCurrentCoolDuration();
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindUFunction(this, FName("NeedHeat"), this);
-	GetWorld()->GetTimerManager().SetTimer(_needHeatHandle, TimerDelegate, _currentCoolDuration * 0.4, false);
+	GetWorld()->GetTimerManager().SetTimer(_needHeatHandle, TimerDelegate, _currentCoolDuration * 0.45, false);
 
 }
 
 void AEnemy::NeedHeat()
 {
+	UE_LOG(LogTemp, Warning, TEXT("NEED HEAT"));
 	_blackboard->SetValueAsBool("NeedToHeat", true);
 }
 

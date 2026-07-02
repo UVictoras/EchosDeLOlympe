@@ -55,6 +55,7 @@ public:
 protected:
 
 	float _currentTemperature;
+	float _targetTemperature;
 	bool _isCooling;
 
 	UPROPERTY(EditAnywhere, Category = "Temperature")
@@ -67,44 +68,29 @@ protected:
 
 	float _currentCoolDuration;
 
+	UFUNCTION()
+	virtual void UpdateTemperature();
 
 
 	UFUNCTION()
-	virtual void OnReactorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	virtual void OnReactorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	virtual void UpdateTemperature(UHeatSourceComponent* source);
-
-
-	UFUNCTION(BlueprintNativeEvent)
 	void Cool();
-	virtual void Cool_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION()
 	void Heated();
-	virtual void Heated_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION()
 	void ActivateReactor();
-	virtual void ActivateReactor_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION()
 	void DeactivateReactor();
-	virtual void DeactivateReactor_Implementation();
 
 private:
-
-	UPROPERTY(EditAnywhere)
-	FComponentReference _componentReference;
 
 	FTimerHandle _timerHandle;
 	FTimerHandle _temperatureTimerHandle;
 
 	UPROPERTY(EditAnywhere, Category = "Temperature")
-	float _temperatureUpdateTimer; // At 0 temperature is not updating
-
-	UPrimitiveComponent* _reactorOverlapComponent;
+	float _temperatureUpdateTimer = 0.1; // At 0 temperature is not updating
 
 	UPROPERTY()
 	int _overlappedSourceCount = 1;
