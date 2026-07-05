@@ -42,7 +42,7 @@ float UHeatReactor::GetActivationTemperature()
 
 void UHeatReactor::UpdateTemperature()
 {
-	_targetTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation());
+	_targetTemperature = GetWorld()->GetSubsystem<UHeatSubSystem>()->GetTemperatureAtLocation(GetOwner()->GetActorLocation() + _reactorRelativeLocation);
 
 	if (_targetTemperature < _currentTemperature)
 	{

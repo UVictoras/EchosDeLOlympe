@@ -58,6 +58,9 @@ protected:
 	float _targetTemperature;
 	bool _isCooling;
 
+	UPROPERTY(EditAnywhere)
+	FVector _reactorRelativeLocation;
+
 	UPROPERTY(EditAnywhere, Category = "Temperature")
 	float _activationTemperature;
 	UPROPERTY(EditAnywhere, Category = "Temperature")

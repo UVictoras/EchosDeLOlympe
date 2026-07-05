@@ -62,7 +62,6 @@ void AEnemy::Cool()
 
 void AEnemy::NeedHeat()
 {
-	UE_LOG(LogTemp, Warning, TEXT("NEED HEAT"));
 	_blackboard->SetValueAsBool("NeedToHeat", true);
 }
 
